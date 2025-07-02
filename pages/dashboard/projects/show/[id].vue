@@ -12,9 +12,10 @@
       class="bg-white p-6 rounded-lg shadow dark:bg-slate-800 dark:text-gray-100"
     >
       <img
-        class="w-full max-h-72 object-contain rounded mb-6"
-        :src="`http://api-portofolio.up.railway.app/storage/project/${project.image}`"
-        :alt="project.title"
+        class="w-full h-48 object-cover"
+        :src="getProjectImage(project.image)"
+        :alt="project.title || 'Project Image'"
+        onerror="this.src='/images/logo-3.png'"
       />
 
       <h1 class="text-2xl font-bold mb-2">{{ project.title }}</h1>
@@ -79,7 +80,6 @@
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
 
-
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -92,11 +92,15 @@ const project = ref(null);
 
 const isLoading = ref(true);
 
+const getProjectImage = (image) => {
+  return image
+    ? `https://api-portofolio.up.railway.app/storage/project/${image}`
+    : "/images/logo-3.png";
+};
+
 onMounted(async () => {
   try {
-    const res = await $api.get(
-      `/projects/${route.params.id}`,
-    );
+    const res = await $api.get(`/projects/${route.params.id}`);
     project.value = res.data.data;
   } catch (err) {
     console.error("Gagal memuat detail project:", err);

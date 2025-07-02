@@ -31,14 +31,13 @@
         </div>
       </div>
 
-      <!-- Tombol Scroll -->
       <div class="flex justify-center pt-32 md:pt-20">
-        <NuxtLink
-          to="#about"
+        <button
+          @click="scrollToAbout"
           class="w-10 h-10 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 rounded-full animate-bounce transition-colors duration-300"
         >
           <IconsDown />
-        </NuxtLink>
+        </button>
       </div>
     </section>
 
@@ -136,13 +135,13 @@
           </div>
 
           <!-- View Projects Button -->
-          <div class="flex justify-center py-8">
-            <NuxtLink
-              class="text-base lg:text-lg text-indigo-600 hover:text-indigo-700 hover:-translate-y-1 transition-all duration-300 font-medium"
-              to="#projects"
+          <div class="flex justify-center pt-32 md:pt-20">
+            <button
+              @click="scrollToProject"
+              class="text-lg font-semibold flex justify-center text-indigo-500 hover:scale-110 transition-all duration-300"
             >
-              View Projects →
-            </NuxtLink>
+              View Projects
+            </button>
           </div>
         </div>
       </div>
@@ -196,13 +195,10 @@
               <!-- Gambar -->
               <div class="w-72 h-44 mx-auto mt-4 rounded-t-2xl overflow-hidden">
                 <img
-                  class="w-full h-full object-cover"
-                  :src="
-                    project.image
-                      ? `http://api-portofolio.up.railway.app/storage/project/${project.image}`
-                      : '/images/logo-3.png'
-                  "
-                  :alt="project.title"
+                  class="w-full h-48 object-cover"
+                  :src="getProjectImage(project.image)"
+                  :alt="project.title || 'Project Image'"
+                  onerror="this.src='/images/logo-3.png'"
                 />
               </div>
 
@@ -260,7 +256,13 @@ useHead({ title: "Home - Achmad" });
 
 const projects = ref([]);
 const isLoading = ref(true);
-const { $api } = useNuxtApp(); 
+const { $api } = useNuxtApp();
+
+const getProjectImage = (image) => {
+  return image
+    ? `https://api-portofolio.up.railway.app/storage/project/${image}`
+    : "/images/logo-3.png";
+};
 
 onMounted(async () => {
   try {
@@ -272,4 +274,14 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
+
+const scrollToAbout = () => {
+  const section = document.querySelector("#about");
+  section?.scrollIntoView({ behavior: "smooth" });
+};
+
+const scrollToProject = () => {
+  const section = document.querySelector("#projects");
+  section?.scrollIntoView({ behavior: "smooth" });
+};
 </script>

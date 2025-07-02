@@ -34,25 +34,22 @@
       </div>
 
       <!-- Project Cards -->
-      <div v-else-if="projects.length" class="flex justify-center">
+      <div v-else-if="projects.length > 0" class="flex justify-center">
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-6 py-16"
         >
           <div
-            v-for="project in projects"
-            :key="project.id"
+            v-for="(project, index) in projects"
+            :key="project.id || index"
             class="bg-white bg-opacity-60 backdrop-blur-md w-80 h-[23rem] border border-gray-200 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-300"
           >
             <!-- Gambar -->
             <div class="w-72 h-44 mx-auto mt-4 rounded-xl overflow-hidden">
               <img
-                class="w-full h-full object-cover"
-                :src="
-                  project.image
-                    ? `http://api-portofolio.up.railway.app/storage/project/${project.image}`
-                    : '/images/logo-3.png'
-                "
-                :alt="project.title"
+                class="w-full h-48 object-cover"
+                :src="getProjectImage(project.image)"
+                :alt="project.title || 'Project Image'"
+                onerror="this.src='/images/logo-3.png'"
               />
             </div>
 
@@ -100,7 +97,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-
 const { $api } = useNuxtApp();
 
 useHead({ title: "Projects - Achmad" });
@@ -108,12 +104,19 @@ useHead({ title: "Projects - Achmad" });
 const projects = ref([]);
 const isLoading = ref(true);
 
+const getProjectImage = (image) => {
+  return image
+    ? `https://api-portofolio.up.railway.app/project/${image}`
+    : "/images/logo-3.png";
+};
+
 onMounted(async () => {
   try {
     const res = await $api.get("/projects");
-    projects.value = res.data.data;
+    projects.value = res.data?.data ?? [];
   } catch (err) {
-    console.error("Gagal memuat project:", err);
+    console.error("Failed to load projects:", err);
+    // Optional: show error message to user with a toast or alert
   } finally {
     isLoading.value = false;
   }

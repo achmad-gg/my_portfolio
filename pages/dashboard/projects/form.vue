@@ -122,7 +122,7 @@
           Reset
         </button>
         <NuxtLink
-          @click="goBack"
+          to="/dashboard/projects"
           class="border border-yellow-500 text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-800 px-3 py-1 rounded transition cursor-pointer"
         >
           Cancel
@@ -187,7 +187,6 @@
 <script setup>
 import { reactive, ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
 import Multiselect from "vue-multiselect";
 
 definePageMeta({
@@ -200,29 +199,19 @@ const { $api } = useNuxtApp();
 const router = useRouter();
 const route = useRoute();
 
-const goBack = () => {
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = "/dashboard/projects";
-  }
-};
-
-// Alert logic
 const showAlert = ref(false);
 const alertMessage = ref("");
 const alertType = ref("success");
+
 const triggerAlert = (message, type = "success") => {
   alertMessage.value = message;
   alertType.value = type;
   showAlert.value = true;
-  setTimeout(() => {
-    showAlert.value = false;
-  }, 3000);
+  setTimeout(() => (showAlert.value = false), 3000);
 };
 
-const id = route.query.id ?? null;
-const isEdit = ref(false);
+const id = route.query.id;
+const isEdit = ref(!!id);
 const preview = ref(null);
 const categories = ref([]);
 const selectedCategories = ref([]);
@@ -269,64 +258,42 @@ const loadCategories = async () => {
 
 const save = async () => {
   const categoryIds = selectedCategories.value.map((cat) => cat.id);
-  if (categoryIds.length === 0) {
-    triggerAlert("Silakan pilih minimal satu kategori!", "error");
-    return;
-  }
+  if (!categoryIds.length)
+    return triggerAlert("Silakan pilih minimal satu kategori!", "error");
 
   const formData = new FormData();
-  formData.append("title", form.title);
-  formData.append("content", form.content);
-  formData.append("bidang", form.bidang);
-  formData.append("github_link", form.github_link || "");
-  formData.append("demo_link", form.demo_link || "");
-  if (form.image) formData.append("image", form.image);
+  Object.entries(form).forEach(([key, value]) => {
+    if (key === "image" && !value) return;
+    formData.append(key, value || "");
+  });
   categoryIds.forEach((id, i) => formData.append(`category_id[${i}]`, id));
 
   try {
-    if (isEdit.value && id) {
-      await $api.post(
-        `/projects/${id}?_method=PUT`,
-        formData,
-      );
-      triggerAlert("Project berhasil diupdate!");
-    } else {
-      await $api.post("/projects", formData);
-      triggerAlert("Project berhasil ditambahkan!");
-    }
-
+    const url = isEdit.value ? `/projects/${id}?_method=PUT` : "/projects";
+    await $api.post(url, formData);
+    triggerAlert(
+      `Project berhasil di${isEdit.value ? "update" : "tambahkan"}!`,
+    );
     setTimeout(() => router.push("/dashboard/projects"), 1500);
   } catch (err) {
-    if (err.response?.status === 422) {
-      console.error("🛑 Validasi Gagal:", err.response.data.errors);
-      triggerAlert("Validasi gagal! Silakan periksa kembali.", "error");
-    } else {
-      console.error("🚨 Error:", err);
-      triggerAlert("Terjadi kesalahan saat menyimpan project.", "error");
-    }
+    const msg =
+      err.response?.status === 422 ? "Validasi gagal!" : "Terjadi kesalahan.";
+    triggerAlert(msg, "error");
+    console.error(err);
   }
 };
 
 onMounted(async () => {
   await loadCategories();
-
-  if (id) {
-    isEdit.value = true;
-    try {
-      const res = await $api.get(`/projects/${id}`);
-      const project = res.data.data;
-      form.title = project.title;
-      form.content = project.content;
-      form.bidang = project.bidang;
-      form.github_link = project.github_link;
-      form.demo_link = project.demo_link;
-      preview.value = `http://api-portofolio.up.railway.app/storage/project/${project.image}`;
-      selectedCategories.value = project.categories;
-    } catch (err) {
-      console.error("Gagal mengambil data project:", err);
-      triggerAlert("Gagal mengambil data project.", "error");
-      router.push("/dashboard/projects");
-    }
+  if (!id) return;
+  try {
+    const res = await $api.get(`/projects/${id}`);
+    Object.assign(form, res.data.data);
+    selectedCategories.value = res.data.data.categories;
+    preview.value = `https://api-portofolio.up.railway.app/storage/project/${res.data.data.image}`;
+  } catch (err) {
+    triggerAlert("Gagal mengambil data project.", "error");
+    router.push("/dashboard/projects");
   }
 });
 </script>

@@ -51,13 +51,10 @@
         <!-- Gambar -->
         <div class="mb-6 rounded-lg overflow-hidden border bg-white">
           <img
-            class="w-full max-h-72 object-contain mx-auto"
-            :src="
-              project.image
-                ? `http://api-portofolio.up.railway.app/storage/project/${project.image}`
-                : '/images/logo-3.png'
-            "
-            :alt="project.title"
+            class="w-full h-48 object-cover"
+            :src="getProjectImage(project.image)"
+            :alt="project.title || 'Project Image'"
+            onerror="this.src='/images/logo-3.png'"
           />
         </div>
 
@@ -130,6 +127,12 @@ const goBack = () => {
   } else {
     window.location.href = "/projects";
   }
+};
+
+const getProjectImage = (image) => {
+  return image
+    ? `https://api-portofolio.up.railway.app/storage/project/${image}`
+    : "/images/logo-3.png";
 };
 
 onMounted(async () => {
