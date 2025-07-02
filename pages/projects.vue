@@ -49,7 +49,7 @@
                 class="w-full h-full object-cover"
                 :src="
                   project.image
-                    ? `http://localhost:8000/storage/project/${project.image}`
+                    ? `http://api-portofolio.up.railway.app/storage/project/${project.image}`
                     : '/images/logo-3.png'
                 "
                 :alt="project.title"

@@ -13,7 +13,7 @@
     >
       <img
         class="w-full max-h-72 object-contain rounded mb-6"
-        :src="`http://localhost:8000/storage/project/${project.image}`"
+        :src="`http://api-portofolio.up.railway.app/storage/project/${project.image}`"
         :alt="project.title"
       />
 
