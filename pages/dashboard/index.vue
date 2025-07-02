@@ -124,7 +124,7 @@
     </div>
 
     <!-- Aksi Cepat -->
-    <div class="flex gap-4">
+    <div class="flex gap-4 mt-5">
       <NuxtLink
         to="/dashboard/projects/form"
         class="border border-green-500 text-green-500 hover:bg-green-50 dark:hover:bg-green-900 hover:scale-105 px-2 py-1 rounded transition"
@@ -143,7 +143,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import axios from "axios";
 import { useCookie } from "#app";
 
 useHead({ title: "Dashboard - Admin" });
@@ -156,12 +155,12 @@ const token = useCookie("token");
 console.log("Token on dashboard:", token.value);
 
 const projects = ref([]);
-
+const { $api } = useNuxtApp(); 
 const isLoading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/projects");
+    const res = await $api.get("/projects");
     projects.value = res.data.data;
   } catch (err) {
     console.error("Gagal memuat data project:", err);

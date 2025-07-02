@@ -1,5 +1,22 @@
 <template>
-  <div class="max-w-xl mx-auto p-6 my-6 bg-white dark:bg-gray-800 shadow rounded text-gray-900 dark:text-gray-100">
+  <div
+    class="max-w-xl mx-auto p-6 my-6 bg-white dark:bg-gray-800 shadow rounded text-gray-900 dark:text-gray-100"
+  >
+    <!-- Alert Box -->
+    <transition name="fade">
+      <div
+        v-if="message"
+        :class="[
+          'mb-4 p-3 rounded border text-sm transition-all duration-300',
+          messageType === 'success'
+            ? 'bg-green-100 text-green-700 border-green-400'
+            : 'bg-red-100 text-red-700 border-red-400',
+        ]"
+      >
+        {{ message }}
+      </div>
+    </transition>
+
     <h1 class="text-xl font-bold mb-4">
       {{ isEdit ? "Edit Category" : "Add Category" }}
     </h1>
@@ -7,7 +24,9 @@
     <form @submit.prevent="handleSubmit">
       <!-- Input Nama Kategori -->
       <div class="mb-4">
-        <label class="block text-gray-700 dark:text-gray-300 mb-1">Category Name</label>
+        <label class="block text-gray-700 dark:text-gray-300 mb-1"
+          >Category Name</label
+        >
         <input
           v-model="form.name"
           type="text"
@@ -38,12 +57,10 @@
     </form>
   </div>
 </template>
-F
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
 
 definePageMeta({
   middleware: "auth",
@@ -53,6 +70,7 @@ useHead({ title: "Form - Admin" });
 
 const router = useRouter();
 const route = useRoute();
+const { $api } = useNuxtApp();
 
 const isEdit = ref(false);
 const form = ref({
@@ -60,20 +78,32 @@ const form = ref({
 });
 const errors = ref({});
 
+const message = ref("");
+const messageType = ref("success"); // 'success' or 'error'
+
+const showMessage = (msg, type = "success") => {
+  message.value = msg;
+  messageType.value = type;
+  setTimeout(() => {
+    message.value = "";
+  }, 3000);
+};
+
 onMounted(async () => {
   if (route.query.id) {
     isEdit.value = true;
     try {
-      const res = await axios.get(`http://localhost:8000/api/category`);
+      const res = await $api.get(`/category`);
       const category = res.data.data.find((cat) => cat.id == route.query.id);
       if (category) {
         form.value.name = category.name;
       } else {
-        alert("Category not found");
+        showMessage("Category not found", "error");
         router.push("/dashboard/projects/category");
       }
     } catch (err) {
       console.error("Error fetching category:", err);
+      showMessage("Failed to load category", "error");
     }
   }
 });
@@ -82,22 +112,34 @@ const handleSubmit = async () => {
   errors.value = {};
   try {
     if (isEdit.value) {
-      await axios.put(
-        `http://localhost:8000/api/category/${route.query.id}`,
-        form.value,
-      );
-      alert("Category updated successfully");
+      await $api.put(`/category/${route.query.id}`, form.value);
+      showMessage("Category updated successfully", "success");
     } else {
-      await axios.post("http://localhost:8000/api/category", form.value);
-      alert("Category added successfully");
+      await $api.post("/category", form.value);
+      showMessage("Category added successfully", "success");
     }
-    router.push("/dashboard/projects/category");
+    setTimeout(() => {
+      router.push("/dashboard/projects/category");
+    }, 1000);
   } catch (err) {
     if (err.response?.status === 422) {
       errors.value = err.response.data;
     } else {
-      alert("Something went wrong");
+      console.error("Submit error:", err);
+      showMessage("Something went wrong", "error");
     }
   }
 };
 </script>
+
+<style scoped>
+/* Optional: simple fade transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

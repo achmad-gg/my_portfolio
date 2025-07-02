@@ -2,52 +2,6 @@
   <div
     class="max-w-full mx-auto p-6 bg-white dark:bg-gray-900 dark:text-white rounded shadow"
   >
-    <!-- Alert -->
-    <transition name="fade">
-      <div
-        v-if="showAlert"
-        class="fixed top-0 flex items-center gap-4 px-4 py-3 rounded text-sm z-50"
-        :class="{
-          'bg-green-50 text-green-700': alertType === 'success',
-          'bg-red-50 text-red-700': alertType === 'error',
-        }"
-      >
-        <div class="flex items-center gap-2">
-          <svg
-            v-if="alertType === 'success'"
-            class="w-5 h-5 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-          <svg
-            v-else
-            class="w-5 h-5 text-red-600"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-          <span>{{ alertMessage }}</span>
-        </div>
-        <button @click="showAlert = false" class="text-xl leading-none">
-          &times;
-        </button>
-      </div>
-    </transition>
     <h1 class="text-2xl font-bold mb-4">
       {{ isEdit ? "Update" : "Add" }} Project
     </h1>
@@ -181,6 +135,52 @@
         </button>
       </div>
     </form>
+
+    <transition name="fade">
+      <div
+        v-if="showAlert"
+        class="fixed top-0 flex justify-center items-center gap-4 px-4 py-3 rounded text-sm z-50"
+        :class="{
+          'bg-green-50 text-green-700': alertType === 'success',
+          'bg-red-50 text-red-700': alertType === 'error',
+        }"
+      >
+        <div class="flex items-center gap-2">
+          <svg
+            v-if="alertType === 'success'"
+            class="w-5 h-5 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <svg
+            v-else
+            class="w-5 h-5 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <span>{{ alertMessage }}</span>
+        </div>
+        <button @click="showAlert = false" class="text-xl leading-none">
+          &times;
+        </button>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -196,6 +196,7 @@ definePageMeta({
 });
 useHead({ title: "Form - Admin" });
 
+const { $api } = useNuxtApp();
 const router = useRouter();
 const route = useRoute();
 
@@ -259,7 +260,7 @@ const resetForm = () => {
 
 const loadCategories = async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/category");
+    const res = await $api.get("/category");
     categories.value = res.data.data;
   } catch (err) {
     console.error("Gagal mengambil kategori:", err);

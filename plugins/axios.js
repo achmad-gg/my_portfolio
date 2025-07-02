@@ -1,20 +1,26 @@
 // plugins/axios.js
 import axios from 'axios'
-import { useCookie } from '#app'
+import { useCookie, useRuntimeConfig } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const token = useCookie('token') // Ambil token dari cookie
+  const config = useRuntimeConfig()
+  const token = useCookie('token')
 
-  // Buat instance axios dengan konfigurasi
   const instance = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: config.public.apiBase, // Gunakan runtime config!
     headers: {
       Accept: 'application/json',
-      Authorization: token.value ? `Bearer ${token.value}` : '',
     },
   })
 
-  // Inject ke seluruh aplikasi Nuxt sebagai $api
+  // Tambahkan Authorization secara dinamis lewat interceptor
+  instance.interceptors.request.use((request) => {
+    if (token.value) {
+      request.headers.Authorization = `Bearer ${token.value}`
+    }
+    return request
+  })
+
   return {
     provide: {
       api: instance,

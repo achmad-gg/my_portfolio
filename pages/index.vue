@@ -255,16 +255,16 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
 
 useHead({ title: "Home - Achmad" });
 
 const projects = ref([]);
 const isLoading = ref(true);
+const { $api } = useNuxtApp(); 
 
 onMounted(async () => {
   try {
-    const res = await axios.get("http://localhost:8000/api/projects");
+    const res = await $api.get("/projects");
     projects.value = res.data.data;
   } catch (err) {
     console.error("Gagal memuat project:", err);

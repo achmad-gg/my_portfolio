@@ -4,22 +4,22 @@
     <header
       class="bg-white dark:bg-gray-800 transition-colors duration-500 shadow px-4 py-3 flex justify-between items-center text-slate-800 dark:text-white"
     >
-      <div>
-        <h1 class="font-bold transition-all duration-500">Dashboard</h1>
+      <!-- Kiri: Judul dan tombol sidebar -->
+      <div class="flex items-center gap-3">
+        <!-- Tombol Sidebar (mobile) -->
+        <button
+          class="md:hidden text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white text-2xl transition-colors duration-300"
+          @click="$emit('toggleSidebar')"
+          aria-label="Toggle Sidebar"
+        >
+          ☰
+        </button>
+        <h1 class="font-bold text-lg">Dashboard</h1>
       </div>
 
-      <!-- Tombol Sidebar (mobile) -->
-      <button
-        class="md:hidden text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white text-xl transition-colors duration-300"
-        @click="$emit('toggleSidebar')"
-        aria-label="Toggle Sidebar"
-      >
-        ☰
-      </button>
-
-      <!-- Aksi Header -->
-      <div class="flex gap-2 items-center">
-        <!-- Tombol Dark Mode -->
+      <!-- Kanan: Tombol-tombol -->
+      <div class="flex items-center gap-2 ml-auto">
+        <!-- Dark Mode Toggle -->
         <button
           @click="toggleDarkMode"
           class="text-lg w-10 h-10 flex items-center justify-center rounded-full border dark:border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300"
@@ -47,10 +47,6 @@
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
               class="w-5 h-5 text-gray-300"
             >
               <path
@@ -60,13 +56,13 @@
           </transition>
         </button>
 
-        <!-- Tombol Logout -->
+        <!-- Logout -->
         <button
           @click="showConfirm = true"
-          class="text-red-600 flex items-center gap-2 px-3 py-2 hover:bg-red-50 dark:hover:bg-red-800 hover:text-red-00 dark:hover:text-red-200 rounded transition-colors duration-300"
+          class="text-red-600 flex items-center gap-1 px-2 py-1 hover:bg-red-50 dark:hover:bg-red-800 hover:text-red-700 dark:hover:text-red-200 rounded transition-colors duration-300 text-sm md:text-base"
         >
           Logout
-          <svg class="w-5 h-5" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
             <path d="M10 3V6H4L4 10H10L10 13H11L16 8L11 3H10Z" />
             <path d="M0 2V14H2V2H0Z" />
           </svg>
@@ -124,14 +120,18 @@ const confirmLogout = () => {
 
 const toggleDarkMode = () => {
   isDark.value = !isDark.value;
-  document.documentElement.classList.toggle("dark", isDark.value);
+  updateDarkClass(isDark.value);
   localStorage.setItem("dark", isDark.value);
 };
 
+const updateDarkClass = (enabled) => {
+  document.documentElement.classList[enabled ? "add" : "remove"]("dark");
+};
+
 onMounted(() => {
-  const saved = localStorage.getItem("dark");
-  isDark.value = saved === "true";
-  document.documentElement.classList.toggle("dark", isDark.value);
+  const saved = localStorage.getItem("dark") === "true";
+  isDark.value = saved;
+  updateDarkClass(saved);
 });
 </script>
 
@@ -148,7 +148,6 @@ onMounted(() => {
 .slide-fade-leave-active {
   transition: all 0.3s ease;
 }
-
 .slide-fade-enter-from {
   opacity: 0;
   transform: translateY(-10px);

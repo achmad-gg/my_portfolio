@@ -159,14 +159,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
-import axios from "axios";
+import { ref, onMounted, onBeforeUnmount, watchEffect } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 definePageMeta({ middleware: "auth", layout: "admin" });
 useHead({ title: "Projects - Admin" });
 
 const router = useRouter();
+const route = useRoute();
+
 const projects = ref([]);
 const selectedProject = ref(null);
 const tableRef = ref(null);
@@ -174,11 +175,12 @@ const actionsRef = ref(null);
 const isLoading = ref(false);
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
+const { $api } = useNuxtApp();
 
 const fetchProjects = async () => {
   isLoading.value = true;
   try {
-    const res = await axios.get("http://localhost:8000/api/projects");
+    const res = await $api.get("/projects");
     projects.value = res.data.data;
   } catch (err) {
     console.error("Gagal memuat project:", err);
@@ -200,9 +202,7 @@ const deleteProject = () => {
 const confirmDelete = async () => {
   isDeleting.value = true;
   try {
-    await axios.delete(
-      `http://localhost:8000/api/projects/${selectedProject.value.id}`,
-    );
+    await $api.delete(`/projects/${selectedProject.value.id}`);
     showDeleteModal.value = false;
     selectedProject.value = null;
     await fetchProjects();
@@ -229,6 +229,13 @@ const goToDetail = () => {
 onMounted(() => {
   fetchProjects();
   window.addEventListener("click", handleClickOutside);
+});
+
+// ✅ Watch route change and reload if route is this page
+watchEffect(() => {
+  if (route.fullPath === "/dashboard/projects") {
+    fetchProjects();
+  }
 });
 
 onBeforeUnmount(() => {

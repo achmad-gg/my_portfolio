@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <div
-      class="w-full max-w-4xl  bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row"
+      class="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row"
     >
       <!-- Left Panel (ilustrasi / welcome) -->
       <div
@@ -66,9 +66,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCookie } from "#app";
-const { $api } = useNuxtApp();
 
+const { $api } = useNuxtApp();
 const router = useRouter();
+
 const email = ref("");
 const password = ref("");
 const error = ref("");
@@ -80,11 +81,14 @@ const login = async () => {
       password: password.value,
     });
 
-    // Simpan token di cookie
-    const token = useCookie("token");
+    // ✅ Simpan token di cookie selama 7 hari
+    const token = useCookie("token", {
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
+    });
     token.value = res.data.token;
 
-    // Redirect ke dashboard
+    // ✅ Redirect ke dashboard
     router.push("/dashboard");
   } catch (err) {
     console.error(err);

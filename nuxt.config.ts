@@ -4,8 +4,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:8000/api",
-      storageBase: "http://localhost:8000/storage",
+      apiBase: "https://api-portofolio.up.railway.app/api",
+      storageBase: "https://api-portofolio.up.railway.app/storage",
     },
   },
 

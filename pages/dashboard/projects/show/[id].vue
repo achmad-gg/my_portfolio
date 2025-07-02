@@ -78,7 +78,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
-import axios from "axios";
+
 
 definePageMeta({
   middleware: "auth",
@@ -94,8 +94,8 @@ const isLoading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await axios.get(
-      `http://localhost:8000/api/projects/${route.params.id}`,
+    const res = await $api.get(
+      `/projects/${route.params.id}`,
     );
     project.value = res.data.data;
   } catch (err) {

@@ -4,7 +4,7 @@
     <Sidebar :show="showSidebar" @close="showSidebar = false" />
 
     <!-- Main content -->
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col overflow-hidden">
       <Topbar @toggleSidebar="showSidebar = !showSidebar" />
       <main class="overflow-auto flex-1 dark:bg-gray-900">
         <NuxtPage />

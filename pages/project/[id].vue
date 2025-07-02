@@ -97,7 +97,7 @@
             target="_blank"
             class="inline-flex items-center border border-black text-black hover:bg-slate-200 px-3 py-2 text-sm font-semibold rounded-md transition"
           >
-            <IconsGithub class="mx-2"/> GitHub
+            <IconsGithub class="mx-2" /> GitHub
           </a>
           <a
             v-if="project.demo_link"
@@ -105,7 +105,7 @@
             target="_blank"
             class="inline-flex items-center border border-indigo-500 text-indigo-500 hover:bg-indigo-100 px-3 py-2 text-sm font-semibold rounded-md transition"
           >
-            <IconsDeploy class="mx-2"/> Live Demo
+            <IconsDeploy class="mx-2" /> Live Demo
           </a>
         </div>
       </div>
@@ -116,13 +116,13 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
-import axios from "axios";
 
 useHead({ title: "Project Detail" });
 
 const route = useRoute();
 const project = ref(null);
 const isLoading = ref(true);
+const { $api } = useNuxtApp();
 
 const goBack = () => {
   if (window.history.length > 1) {
@@ -134,9 +134,7 @@ const goBack = () => {
 
 onMounted(async () => {
   try {
-    const res = await axios.get(
-      `http://localhost:8000/api/projects/${route.params.id}`,
-    );
+    const res = await $api.get(`/projects/${route.params.id}`);
     project.value = res.data.data;
   } catch (err) {
     console.error("Project tidak ditemukan:", err);

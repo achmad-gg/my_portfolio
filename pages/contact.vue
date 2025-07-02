@@ -160,7 +160,9 @@ import { ref } from "vue";
 useHead({
   title: "Contact - Achmad",
 });
+
 const showModal = ref(false);
+const { $api } = useNuxtApp();
 
 const form = ref({
   name: "",
@@ -169,11 +171,15 @@ const form = ref({
 });
 
 const isSubmitting = ref(false);
-
 const errorMessage = ref("");
 
 const handleSubmit = async () => {
-  if (!form.value.name || !form.value.email || !form.value.message) {
+  // Validasi
+  if (
+    !form.value.name.trim() ||
+    !form.value.email.trim() ||
+    !form.value.message.trim()
+  ) {
     errorMessage.value = "Please fill in all fields.";
     return;
   }
@@ -182,21 +188,17 @@ const handleSubmit = async () => {
   errorMessage.value = "";
 
   try {
-    await $fetch("http://localhost:8000/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: {
-        name: form.value.name,
-        email: form.value.email,
-        message: form.value.message,
-      },
-    });
+    await $api.post("/contact", form.value);
 
+    // Tampilkan modal sukses
     showModal.value = true;
-    form.value = { name: "", email: "", message: "" };
+
+    // Reset form
+    form.value = {
+      name: "",
+      email: "",
+      message: "",
+    };
   } catch (error) {
     console.error("Gagal:", error);
     errorMessage.value = "Failed to send your message. Please try again later.";
