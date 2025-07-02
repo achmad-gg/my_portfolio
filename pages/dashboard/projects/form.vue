@@ -285,13 +285,13 @@ const save = async () => {
 
   try {
     if (isEdit.value && id) {
-      await axios.post(
-        `http://localhost:8000/api/projects/${id}?_method=PUT`,
+      await $api.post(
+        `/projects/${id}?_method=PUT`,
         formData,
       );
       triggerAlert("Project berhasil diupdate!");
     } else {
-      await axios.post("http://localhost:8000/api/projects", formData);
+      await $api.post("/projects", formData);
       triggerAlert("Project berhasil ditambahkan!");
     }
 
@@ -313,14 +313,14 @@ onMounted(async () => {
   if (id) {
     isEdit.value = true;
     try {
-      const res = await axios.get(`http://localhost:8000/api/projects/${id}`);
+      const res = await $api.get(`/projects/${id}`);
       const project = res.data.data;
       form.title = project.title;
       form.content = project.content;
       form.bidang = project.bidang;
       form.github_link = project.github_link;
       form.demo_link = project.demo_link;
-      preview.value = `http://localhost:8000/storage/project/${project.image}`;
+      preview.value = `http://api-portofolio.up.railway.app/storage/project/${project.image}`;
       selectedCategories.value = project.categories;
     } catch (err) {
       console.error("Gagal mengambil data project:", err);
