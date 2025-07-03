@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: "https://api-portofolio.up.railway.app/api",
-      storageBase: "https://api-portofolio.up.railway.app/storage",
+      storageBase: "https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/",
     },
   },
 

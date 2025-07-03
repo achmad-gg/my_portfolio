@@ -94,7 +94,7 @@ const isLoading = ref(true);
 
 const getProjectImage = (image) => {
   return image
-    ? `https://api-portofolio.up.railway.app/storage/project/${image}`
+    ? `https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/${image}`
     : "/images/logo-3.png";
 };
 

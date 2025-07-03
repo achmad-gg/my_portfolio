@@ -268,6 +268,11 @@ const save = async () => {
   });
   categoryIds.forEach((id, i) => formData.append(`category_id[${i}]`, id));
 
+  // Debug: pastikan file dikirim
+  for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1]);
+  }
+
   try {
     const url = isEdit.value ? `/projects/${id}?_method=PUT` : "/projects";
     await $api.post(url, formData);
@@ -290,7 +295,7 @@ onMounted(async () => {
     const res = await $api.get(`/projects/${id}`);
     Object.assign(form, res.data.data);
     selectedCategories.value = res.data.data.categories;
-    preview.value = `https://api-portofolio.up.railway.app/storage/project/${res.data.data.image}`;
+    preview.value = `https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/images/${res.data.data.image}`;
   } catch (err) {
     triggerAlert("Gagal mengambil data project.", "error");
     router.push("/dashboard/projects");
