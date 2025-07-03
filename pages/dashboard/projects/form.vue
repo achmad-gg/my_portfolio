@@ -295,7 +295,7 @@ onMounted(async () => {
     const res = await $api.get(`/projects/${id}`);
     Object.assign(form, res.data.data);
     selectedCategories.value = res.data.data.categories;
-    preview.value = `https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/images/${res.data.data.image}`;
+    preview.value = `https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/${res.data.data.image}`;
   } catch (err) {
     triggerAlert("Gagal mengambil data project.", "error");
     router.push("/dashboard/projects");
