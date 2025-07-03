@@ -193,6 +193,7 @@ definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+
 useHead({ title: "Form - Admin" });
 
 const { $api } = useNuxtApp();
@@ -262,15 +263,22 @@ const save = async () => {
     return triggerAlert("Silakan pilih minimal satu kategori!", "error");
 
   const formData = new FormData();
-  Object.entries(form).forEach(([key, value]) => {
-    if (key === "image" && !value) return;
-    formData.append(key, value || "");
-  });
+
+  // Tambah semua field dari form
+  for (const [key, value] of Object.entries(form)) {
+    if (key === "image") {
+      if (value) formData.append("image", value); // pastikan File object
+    } else {
+      formData.append(key, value || "");
+    }
+  }
+
+  // Tambahkan kategori
   categoryIds.forEach((id, i) => formData.append(`category_id[${i}]`, id));
 
-  // Debug: pastikan file dikirim
-  for (let pair of formData.entries()) {
-    console.log(pair[0], pair[1]);
+  // Debug (opsional)
+  for (let [key, val] of formData.entries()) {
+    console.log(key, val);
   }
 
   try {
@@ -291,10 +299,13 @@ const save = async () => {
 onMounted(async () => {
   await loadCategories();
   if (!id) return;
+
   try {
     const res = await $api.get(`/projects/${id}`);
     Object.assign(form, res.data.data);
     selectedCategories.value = res.data.data.categories;
+
+    // Gunakan URL Supabase yang benar
     preview.value = `https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/${res.data.data.image}`;
   } catch (err) {
     triggerAlert("Gagal mengambil data project.", "error");
