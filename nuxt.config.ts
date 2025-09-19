@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: "https://api-portofolio.up.railway.app/api",
-      storageBase: "https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/",
+      storageBase:
+        "https://cwkkcgnwdzbyoxrcphwt.supabase.co/storage/v1/object/public/image/",
     },
   },
 
@@ -44,5 +45,4 @@ export default defineNuxtConfig({
     transpile: ["vue-tippy"],
   },
   plugins: ["~/plugins/axios.js"],
-  
 });
