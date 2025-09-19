@@ -4,7 +4,7 @@
       class="relative w-full h-screen bg-gradient-to-bl from-indigo-200 via-indigo-400 to-indigo-600"
     >
       <div
-        class="fixed top-0 z-50 w-full h-[100vh] backdrop-blur-lg bg-black/30 flex items-center justify-center px-4"
+        class="fixed top-0 z-50 flex items-center justify-center w-full h-full px-4 backdrop-blur-lg bg-black/30 animate-fadeIn"
       >
         <div
           class="z-50 w-full max-w-lg p-6 text-center border border-indigo-200 shadow-2xl sm:p-10 bg-white/90 rounded-2xl"
@@ -21,7 +21,7 @@
           </p>
           <div class="mt-4 sm:mt-6">
             <a
-              href="mailto:contact@example.com"
+              href="https://www.instagram.com/achmadqt/"
               class="text-sm font-semibold text-indigo-600 sm:text-base hover:underline"
             >
               Contact us for updates
