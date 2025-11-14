@@ -1,5 +1,13 @@
+<script setup>
+import ToastUpdate from '~/components/ToastUpdate.vue'
+
+const showToast = ref(true)
+const linkWebsite = 'https://gg-achmad.vercel.app'
+</script>
+
 <template>
   <NuxtLayout />
+  <ToastUpdate v-model="showToast" :link="linkWebsite" />
 </template>
 
 <style>
@@ -12,4 +20,4 @@
   opacity: 0;
   filter: blur(1rem);
 }
-</style> 
+</style>

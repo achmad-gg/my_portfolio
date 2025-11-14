@@ -4,32 +4,6 @@
       class="relative w-full h-screen bg-gradient-to-bl from-indigo-200 via-indigo-400 to-indigo-600"
     >
       <div
-        class="fixed top-0 z-50 flex items-center justify-center w-full h-full px-4 backdrop-blur-lg bg-black/30 animate-fadeIn"
-      >
-        <div
-          class="z-50 w-full max-w-lg p-6 text-center border border-indigo-200 shadow-2xl sm:p-10 bg-white/90 rounded-2xl"
-        >
-          <h1 class="text-2xl font-bold sm:text-3xl text-slate-800">
-            Under Maintenance
-          </h1>
-          <p
-            class="mt-3 text-sm leading-relaxed sm:mt-4 sm:text-lg text-slate-600"
-          >
-            We're working on a fresh new look for this website! Please bear with
-            us as we make things even better. Check back soon for an enhanced
-            experience!
-          </p>
-          <div class="mt-4 sm:mt-6">
-            <a
-              href="https://www.instagram.com/achmadqt/"
-              class="text-sm font-semibold text-indigo-600 sm:text-base hover:underline"
-            >
-              Contact us for updates
-            </a>
-          </div>
-        </div>
-      </div>
-      <div
         class="flex flex-col-reverse items-center justify-between gap-10 px-6 md:flex-row md:px-12 pt-44"
       >
         <!-- Teks -->
